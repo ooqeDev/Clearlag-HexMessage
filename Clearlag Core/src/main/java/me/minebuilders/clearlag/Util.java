@@ -4,10 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
 
@@ -62,7 +64,20 @@ public class Util {
     }
 
     public static String color(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+        if (s == null) return null;
+
+        Matcher matcher = Pattern.compile("#([A-Fa-f0-9]{6})").matcher(s);
+        StringBuffer str = new StringBuffer();
+
+        while (matcher.find()) {
+            StringBuilder b = new StringBuilder("§x");
+            for (char c : matcher.group(1).toCharArray()) {
+                b.append('§').append(c);
+            }
+            matcher.appendReplacement(str, b.toString());
+        }
+        matcher.appendTail(str);
+        return ChatColor.translateAlternateColorCodes('&', str.toString());
     }
 
     public static String[] cloneAndReplaceStringArr(String[] stringArr, String key, String replaced) {
